@@ -25,6 +25,10 @@ class LayoutView extends React.Component {
 const buttonWidth = 0.33 * Dimensions.get('window').width;
 
 class RecordPanel extends React.Component {
+  state = {
+    recording: false,
+  }
+
   render() {
     return (
       <LayoutView
@@ -35,10 +39,13 @@ class RecordPanel extends React.Component {
         }}>
         <TouchableOpacity
           style={{
-            backgroundColor: 'red',
+            backgroundColor: this.props.color,
             borderRadius: 0.5 * buttonWidth,
             width: buttonWidth,
             height: buttonWidth,
+
+            borderWidth: this.state.recording ? 5 : 0,
+            borderColor: 'black',
           }}
         />
       </LayoutView>
@@ -64,8 +71,12 @@ class TimerScreen extends React.Component {
               flex: 1,
               flexDirection: 'row',
             }}>
-            <RecordPanel />
-            <RecordPanel />
+            <RecordPanel
+              color={'blue'}
+            />
+            <RecordPanel
+              color={'red'}
+            />
           </LayoutView>
 
           <LayoutView style={{ height: 120 }} />
