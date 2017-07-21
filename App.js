@@ -52,12 +52,7 @@ class RecordPanel extends React.Component {
 
 class TimerScreen extends React.Component {
   state = {
-    blue: {
-      recording: false,
-    },
-    red: {
-      recording: false,
-    },
+    recording: 'none',
   }
 
   render() {
@@ -79,12 +74,12 @@ class TimerScreen extends React.Component {
             }}>
             <RecordPanel
               color={'blue'}
-              recording={this.state.blue.recording}
+              recording={this.state.recording == 'blue'}
               onPress={this._onRecordingPress('blue')}
             />
             <RecordPanel
               color={'red'}
-              recording={this.state.red.recording}
+              recording={this.state.recording == 'red'}
               onPress={this._onRecordingPress('red')}
             />
           </LayoutView>
@@ -97,17 +92,13 @@ class TimerScreen extends React.Component {
   }
 
   _onRecordingPress = (color) => {
-    const otherColor = color === 'red' ? 'blue' : 'red';
-
-    return () =>
-      this.setState({
-        [color]: {
-          recording: !this.state[color].recording,
-        },
-        [otherColor]: {
-          recording: false,
-        }
-      });
+    return () => {
+      if (this.state.recording === color) {
+        this.setState({ recording: 'none' });
+      } else {
+        this.setState({ recording: color });
+      }
+    };
   }
 }
 
