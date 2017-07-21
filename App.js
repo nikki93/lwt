@@ -25,10 +25,6 @@ class LayoutView extends React.Component {
 const buttonWidth = 0.33 * Dimensions.get('window').width;
 
 class RecordPanel extends React.Component {
-  state = {
-    recording: false,
-  }
-
   render() {
     return (
       <LayoutView
@@ -44,22 +40,26 @@ class RecordPanel extends React.Component {
             width: buttonWidth,
             height: buttonWidth,
 
-            borderWidth: this.state.recording ? 5 : 0,
+            borderWidth: this.props.recording ? 5 : 0,
             borderColor: 'black',
           }}
-          onPress={this._onPress}
+          onPress={this.props.onPress}
         />
       </LayoutView>
     );
   }
-
-  _onPress = () => {
-    const newRecording = !this.state.recording;
-    this.setState({ recording: newRecording });
-  }
 }
 
 class TimerScreen extends React.Component {
+  state = {
+    blue: {
+      recording: false,
+    },
+    red: {
+      recording: false,
+    },
+  }
+
   render() {
     return (
       <View
@@ -79,9 +79,13 @@ class TimerScreen extends React.Component {
             }}>
             <RecordPanel
               color={'blue'}
+              recording={this.state.blue.recording}
+              onPress={this._onRecordingPress('blue')}
             />
             <RecordPanel
               color={'red'}
+              recording={this.state.red.recording}
+              onPress={this._onRecordingPress('red')}
             />
           </LayoutView>
 
@@ -90,6 +94,20 @@ class TimerScreen extends React.Component {
 
       </View>
     );
+  }
+
+  _onRecordingPress = (color) => {
+    const otherColor = color === 'red' ? 'blue' : 'red';
+
+    return () =>
+      this.setState({
+        [color]: {
+          recording: !this.state[color].recording,
+        },
+        [otherColor]: {
+          recording: false,
+        }
+      });
   }
 }
 
