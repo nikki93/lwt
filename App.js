@@ -47,9 +47,15 @@ class RecordPanel extends React.Component {
             borderWidth: this.state.recording ? 5 : 0,
             borderColor: 'black',
           }}
+          onPress={this._onPress}
         />
       </LayoutView>
     );
+  }
+
+  _onPress = () => {
+    const newRecording = !this.state.recording;
+    this.setState({ recording: newRecording });
   }
 }
 
