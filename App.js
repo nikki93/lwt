@@ -124,7 +124,7 @@ class TimerScreen extends React.Component {
             justifyContent: 'center',
           }}>
           <Text style={{ fontSize: 72 }}>
-            {this.state.totalTime.toFixed(0)}
+            {Math.floor(this.state.totalTime)}
           </Text>
         </LayoutView>
 
@@ -204,7 +204,8 @@ class TimerScreen extends React.Component {
 
   _setTimer = () => {
     if (!this._timeout) {
-      this._timeout = setTimeout(this._onTimer, 350);
+      const frac = (this.state.times.blue + this.state.times.red) % 1;
+      this._timeout = setTimeout(this._onTimer, Math.min(1000 * (1 - frac) + 10, 300));
     }
   }
 
