@@ -53,6 +53,10 @@ class RecordPanel extends React.Component {
 class TimerScreen extends React.Component {
   state = {
     recording: 'none',
+    times: {
+      red: 0,
+      blue: 0,
+    }
   }
 
   render() {
@@ -93,10 +97,26 @@ class TimerScreen extends React.Component {
 
   _onRecordingPress = (color) => {
     return () => {
-      if (this.state.recording === color) {
-        this.setState({ recording: 'none' });
+      const now = 0.001 * Date.now();
+      const lastColor = this.state.recording;
+
+      const nextTimes = { ...this.state.times };
+      if (lastColor !== 'none') {
+        nextTimes[lastColor] = nextTimes[lastColor] + now - this.state.startTime;
+      }
+
+      if (color === 'none' || this.state.recording === color) {
+        this.setState({
+          recording: 'none',
+          startTime: null,
+          times: nextTimes,
+        });
       } else {
-        this.setState({ recording: color });
+        this.setState({
+          recording: color,
+          startTime: now,
+          times: nextTimes,
+        });
       }
     };
   }
