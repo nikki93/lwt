@@ -20,6 +20,9 @@ class LayoutView extends React.Component {
 
 const buttonWidth = 0.33 * Dimensions.get('window').width;
 
+const fontSizeBase = Dimensions.get('window').height / 20.0;
+const fontSizeRel = (factor) => factor * fontSizeBase;
+
 class RecordPanel extends React.Component {
   render() {
     return (
@@ -64,6 +67,10 @@ class TimerScreen extends React.Component {
     const blueFrac = totalTime > 0 ? this.state.times.blue / totalTime : 1;
     const redFrac = totalTime > 0 ? this.state.times.red / totalTime : 1;
 
+    const totalSeconds = Math.floor(this.state.totalTime);
+    const minutes = Math.floor(this.state.totalTime / 60);
+    const seconds = Math.floor(this.state.totalTime % 60);
+
     return this.state.done ? (
       <View
         style={{
@@ -78,7 +85,7 @@ class TimerScreen extends React.Component {
             justifyContent: 'center',
             padding: 40,
           }}>
-          <Text style={{ fontSize: 42 }}>
+          <Text style={{ fontSize: fontSizeRel(1.16) }}>
             Blues spoke {(blueFrac * 100).toFixed(2)}% of the time!
           </Text>
         </LayoutView>
@@ -103,7 +110,7 @@ class TimerScreen extends React.Component {
               justifyContent: 'center',
             }}
             onPress={() => this.setState(startState)}>
-            <Text style={{ fontSize: 36}}>
+            <Text style={{ fontSize: fontSizeRel(1) }}>
               Again!
             </Text>
           </TouchableOpacity>
@@ -123,8 +130,8 @@ class TimerScreen extends React.Component {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text style={{ fontSize: 72 }}>
-            {Math.floor(this.state.totalTime)}
+          <Text style={{ fontSize: fontSizeRel(2.2) }}>
+            {minutes}:{seconds < 10 ? '0' : ''}{seconds}
           </Text>
         </LayoutView>
 
@@ -160,7 +167,7 @@ class TimerScreen extends React.Component {
                 justifyContent: 'center',
               }}
               onPress={this._onRecordingPress('done')}>
-              <Text style={{ fontSize: 36}}>
+              <Text style={{ fontSize: fontSizeRel(1) }}>
                 Done!
               </Text>
             </TouchableOpacity>
@@ -197,25 +204,27 @@ class TimerScreen extends React.Component {
           startTime: now,
           times: nextTimes,
         });
-        this._setTimer();
+        this._setTimer(nextTimes.red + nextTimes.blue);
       }
     };
   }
 
-  _setTimer = () => {
+  _setTimer = (newTotalTime) => {
     if (!this._timeout) {
-      const frac = (this.state.times.blue + this.state.times.red) % 1;
-      this._timeout = setTimeout(this._onTimer, Math.min(1000 * (1 - frac) + 10, 300));
+      const frac = newTotalTime % 1;
+      console.log(frac);
+      this._timeout = setTimeout(this._onTimer, 1000 * (1 - frac) + 10);
     }
   }
 
   _onTimer = () => {
     this._timeout = null;
     if (this.state.recording !== 'none') {
+      const newTotalTime = this.state.times.blue + this.state.times.red + 0.001 * Date.now() - this.state.startTime;
       this.setState({
-        totalTime: this.state.times.blue + this.state.times.red + 0.001 * Date.now() - this.state.startTime,
+        totalTime: newTotalTime,
       })
-      this._setTimer();
+      this._setTimer(newTotalTime);
     }
   }
 }
