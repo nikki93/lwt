@@ -1,6 +1,50 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import Expo from 'expo';
+
+class LayoutView extends React.Component {
+  render() {
+    return (
+      <View
+        {...this.props}
+        style={[this.props.style, {
+            borderWidth: 1,
+            borderColor: 'green',
+          }]}
+      />
+    );
+  }
+}
+
+const buttonWidth = 0.33 * Dimensions.get('window').width;
+
+class RecordPanel extends React.Component {
+  render() {
+    return (
+      <LayoutView
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: 'red',
+            borderRadius: 0.5 * buttonWidth,
+            width: buttonWidth,
+            height: buttonWidth,
+          }}
+        />
+      </LayoutView>
+    );
+  }
+}
 
 class TimerScreen extends React.Component {
   render() {
@@ -11,20 +55,22 @@ class TimerScreen extends React.Component {
           flex: 1,
           padding: 5,
         }}>
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: 'green',
-            flex: 1,
-          }}
-        />
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: 'green',
-            flex: 1,
-          }}
-        />
+
+        <LayoutView style={{ flex: 1 }} />
+
+        <LayoutView style={{flex: 1 }}>
+          <LayoutView
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+            }}>
+            <RecordPanel />
+            <RecordPanel />
+          </LayoutView>
+
+          <LayoutView style={{ height: 120 }} />
+        </LayoutView>
+
       </View>
     );
   }
